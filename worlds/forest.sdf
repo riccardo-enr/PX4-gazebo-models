@@ -226,5 +226,8 @@
       <longitude_deg> 8.546163739800146</longitude_deg>
       <elevation>0</elevation>
     </spherical_coordinates>
+
+    <plugin filename="gz-sim-apply-link-wrench-system" name="gz::sim::ApplyLinkWrenchSystem">
+    </plugin>
   </world>
 </sdf>
