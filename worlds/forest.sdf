@@ -426,7 +426,7 @@
       <elevation>0</elevation>
     </spherical_coordinates>
 
-    <plugin filename="gz-sim-apply-link-wrench-system" name="gz::sim::ApplyLinkWrenchSystem">
+    <plugin filename="gz-sim-apply-link-wrench-system" name="gz::sim::systems::ApplyLinkWrench">
     </plugin>
   </world>
 </sdf>
