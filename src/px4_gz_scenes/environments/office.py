@@ -14,9 +14,9 @@ Geometry (all coordinates in ENU, metres):
   └─────────────────────────────────────────────┘  y = 0
   x=0                                          x=15
 
-Cubicle partitions (half-height, z = 0 → 1.5 m):
-  Row A   x ≈ 4.8–5.2, gaps at y = 5.4–6.6  (passage)
-  Row B   x ≈ 8.8–9.2, gaps at y = 5.9–7.1  (passage)
+Cubicle partitions (full-height, z = 0 → 3 m):
+  Row A   x ≈ 4.8–5.2, gaps at y = 5.2–6.8  (passage, 1.6 m)
+  Row B   x ≈ 8.8–9.2, gaps at y = 5.7–7.3  (passage, 1.6 m)
   Connector  x = 5.2–8.8, y ≈ 6.8–7.2       (transverse connector)
 
 Desks (z = 0.7 → 1.0 m, table height):
@@ -52,9 +52,12 @@ from px4_gz_scenes.shapes import Box
 
 def _box_obj(
     name: str,
-    x0: float, x1: float,
-    y0: float, y1: float,
-    z0: float, z1: float,
+    x0: float,
+    x1: float,
+    y0: float,
+    y1: float,
+    z0: float,
+    z1: float,
     label: str,
 ) -> SceneObject:
     """Create a SceneObject from corner coordinates (convenience helper)."""
@@ -66,7 +69,7 @@ def _box_obj(
     )
 
 
-@register_scene("office")
+@register_scene('office')
 def make_office(
     ext_x: float = 15.0,
     ext_y: float = 12.0,
@@ -84,33 +87,31 @@ def make_office(
     Returns:
         A :class:`Scene` containing all office objects.
     """
-    scene = Scene(name="office", extent=(ext_x, ext_y, z_height))
+    scene = Scene(name='office', extent=(ext_x, ext_y, z_height))
     scene.add_boundary(wall_thickness=wall_thickness, slab_thickness=wall_thickness)
 
-    half = z_height / 2.0  # half-height for partitions
+    # ── Cubicle row A (x ≈ 5) with passage at y = 5.2–6.8 ─────────────────
+    scene.add(_box_obj('partition_a_lower', 4.8, 5.2, 4.0, 5.2, 0.0, z_height, LABEL_PARTITION))
+    scene.add(_box_obj('partition_a_upper', 4.8, 5.2, 6.8, 8.0, 0.0, z_height, LABEL_PARTITION))
 
-    # ── Cubicle row A (x ≈ 5) with passage at y = 5.4–6.6 ─────────────────
-    scene.add(_box_obj("partition_a_lower", 4.8, 5.2, 4.0, 5.4, 0.0, half, LABEL_PARTITION))
-    scene.add(_box_obj("partition_a_upper", 4.8, 5.2, 6.6, 8.0, 0.0, half, LABEL_PARTITION))
-
-    # ── Cubicle row B (x ≈ 9) with passage at y = 5.9–7.1 ─────────────────
-    scene.add(_box_obj("partition_b_lower", 8.8, 9.2, 3.0, 5.9, 0.0, half, LABEL_PARTITION))
-    scene.add(_box_obj("partition_b_upper", 8.8, 9.2, 7.1, 9.0, 0.0, half, LABEL_PARTITION))
+    # ── Cubicle row B (x ≈ 9) with passage at y = 5.7–7.3 ─────────────────
+    scene.add(_box_obj('partition_b_lower', 8.8, 9.2, 3.0, 5.7, 0.0, z_height, LABEL_PARTITION))
+    scene.add(_box_obj('partition_b_upper', 8.8, 9.2, 7.3, 9.0, 0.0, z_height, LABEL_PARTITION))
 
     # ── Transverse connector between row A and row B ────────────────────────
-    scene.add(_box_obj("partition_connector", 5.2, 8.8, 6.8, 7.2, 0.0, half, LABEL_PARTITION))
+    scene.add(_box_obj('partition_connector', 5.2, 8.8, 6.8, 7.2, 0.0, z_height, LABEL_PARTITION))
 
     # ── Desks ───────────────────────────────────────────────────────────────
-    scene.add(_box_obj("desk_1", 5.5, 7.0,  4.5, 5.5, 0.7, 1.0, LABEL_TABLE))
-    scene.add(_box_obj("desk_2", 7.0, 8.5,  8.5, 9.5, 0.7, 1.0, LABEL_TABLE))
-    scene.add(_box_obj("desk_3", 10.5, 12.0, 4.0, 5.0, 0.7, 1.0, LABEL_TABLE))
-    scene.add(_box_obj("desk_4", 10.5, 12.0, 7.5, 8.5, 0.7, 1.0, LABEL_TABLE))
+    scene.add(_box_obj('desk_1', 5.5, 7.0, 4.5, 5.5, 0.7, 1.0, LABEL_TABLE))
+    scene.add(_box_obj('desk_2', 7.0, 8.5, 8.5, 9.5, 0.7, 1.0, LABEL_TABLE))
+    scene.add(_box_obj('desk_3', 10.5, 12.0, 4.0, 5.0, 0.7, 1.0, LABEL_TABLE))
+    scene.add(_box_obj('desk_4', 10.5, 12.0, 7.5, 8.5, 0.7, 1.0, LABEL_TABLE))
 
     # ── Full-height structural columns ──────────────────────────────────────
-    scene.add(_box_obj("col_a", 6.5, 7.0,  9.5, 10.0, 0.0, z_height, LABEL_COLUMN))
-    scene.add(_box_obj("col_b", 11.5, 12.0, 9.5, 10.0, 0.0, z_height, LABEL_COLUMN))
+    scene.add(_box_obj('col_a', 6.5, 7.0, 9.5, 10.0, 0.0, z_height, LABEL_COLUMN))
+    scene.add(_box_obj('col_b', 11.5, 12.0, 9.5, 10.0, 0.0, z_height, LABEL_COLUMN))
 
     # ── Server rack ─────────────────────────────────────────────────────────
-    scene.add(_box_obj("rack", 12.5, 13.5, 4.5, 5.5, 0.0, 2.0, LABEL_RACK))
+    scene.add(_box_obj('rack', 12.5, 13.5, 4.5, 5.5, 0.0, 2.0, LABEL_RACK))
 
     return scene
