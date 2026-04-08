@@ -25,9 +25,13 @@ Types / utilities::
 
     Vec3, Quaternion, Color, IDENTITY_QUAT, euler_to_quat
 
+Visualisation (requires matplotlib)::
+
+    visualise_scene
+
 Typical usage::
 
-    from px4_gz_scenes import get_scene, list_scenes
+    from px4_gz_scenes import get_scene, list_scenes, visualise_scene
 
     print(list_scenes())          # ['office', 'room']
     scene = get_scene("room")
@@ -35,6 +39,8 @@ Typical usage::
 
     for obj in scene.filter_by_label("table"):
         print(obj.name, obj.position)
+
+    visualise_scene(scene)
 """
 
 from px4_gz_scenes._types import (
@@ -59,6 +65,7 @@ from px4_gz_scenes.scene_object import (
     SceneObject,
 )
 from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere, aabb
+from px4_gz_scenes.vis import visualise_scene
 
 # Importing environments triggers @register_scene decorators.
 import px4_gz_scenes.environments  # noqa: F401
@@ -77,4 +84,6 @@ __all__ = [
     "Scene",
     # registry
     "get_scene", "register_scene", "list_scenes",
+    # visualisation
+    "visualise_scene",
 ]
