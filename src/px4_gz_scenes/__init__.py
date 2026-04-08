@@ -29,6 +29,10 @@ Visualisation (requires matplotlib)::
 
     visualise_scene
 
+Exporters::
+
+    to_occupancy_grid
+
 Typical usage::
 
     from px4_gz_scenes import get_scene, list_scenes, visualise_scene
@@ -66,6 +70,7 @@ from px4_gz_scenes.scene_object import (
 )
 from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere, aabb
 from px4_gz_scenes.vis import visualise_scene
+from px4_gz_scenes.occupancy import to_occupancy_grid
 
 # Importing environments triggers @register_scene decorators.
 import px4_gz_scenes.environments  # noqa: F401
@@ -86,4 +91,6 @@ __all__ = [
     "get_scene", "register_scene", "list_scenes",
     # visualisation
     "visualise_scene",
+    # exporters
+    "to_occupancy_grid",
 ]
