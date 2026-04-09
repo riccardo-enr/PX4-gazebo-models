@@ -1,6 +1,5 @@
 import math
 import numpy as np
-import pytest
 from px4_gz_scenes._math import apply_rotation, quat_to_rotation_matrix
 from px4_gz_scenes._types import euler_to_quat, IDENTITY_QUAT
 
@@ -14,11 +13,13 @@ def test_90_deg_yaw():
     # 90° yaw: x → y, y → -x, z → z
     q = euler_to_quat(0.0, 0.0, math.pi / 2)
     R = quat_to_rotation_matrix(q)
-    expected = np.array([
-        [ 0., -1.,  0.],
-        [ 1.,  0.,  0.],
-        [ 0.,  0.,  1.],
-    ])
+    expected = np.array(
+        [
+            [0.0, -1.0, 0.0],
+            [1.0, 0.0, 0.0],
+            [0.0, 0.0, 1.0],
+        ]
+    )
     np.testing.assert_allclose(R, expected, atol=1e-12)
 
 
@@ -26,11 +27,13 @@ def test_90_deg_pitch():
     # 90° pitch (about Y): x → -z, z → x
     q = euler_to_quat(0.0, math.pi / 2, 0.0)
     R = quat_to_rotation_matrix(q)
-    expected = np.array([
-        [ 0.,  0.,  1.],
-        [ 0.,  1.,  0.],
-        [-1.,  0.,  0.],
-    ])
+    expected = np.array(
+        [
+            [0.0, 0.0, 1.0],
+            [0.0, 1.0, 0.0],
+            [-1.0, 0.0, 0.0],
+        ]
+    )
     np.testing.assert_allclose(R, expected, atol=1e-12)
 
 

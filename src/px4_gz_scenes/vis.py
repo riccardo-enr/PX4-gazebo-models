@@ -28,17 +28,17 @@ if TYPE_CHECKING:
 
 # ── Label → colour map ──────────────────────────────────────────────────────
 _LABEL_COLORS: dict[str, str] = {
-    "floor":     "#c8c8c8",   # light grey
-    "ceiling":   "#e0e0e0",   # very light grey
-    "wall":      "#9e9e9e",   # mid grey
-    "partition": "#5c8ed4",   # blue
-    "table":     "#8d6439",   # brown
-    "column":    "#c0392b",   # red
-    "rack":      "#e67e22",   # orange
-    "door":      "#27ae60",   # green
-    "obstacle":  "#7f8c8d",   # grey-blue (default)
+    'floor': '#c8c8c8',  # light grey
+    'ceiling': '#e0e0e0',  # very light grey
+    'wall': '#9e9e9e',  # mid grey
+    'partition': '#5c8ed4',  # blue
+    'table': '#8d6439',  # brown
+    'column': '#c0392b',  # red
+    'rack': '#e67e22',  # orange
+    'door': '#27ae60',  # green
+    'obstacle': '#7f8c8d',  # grey-blue (default)
 }
-_DEFAULT_COLOR = "#7f8c8d"
+_DEFAULT_COLOR = '#7f8c8d'
 _DEFAULT_ALPHA = 0.35
 
 
@@ -48,22 +48,29 @@ def _label_color(label: str) -> str:
 
 # ── Cuboid drawing ───────────────────────────────────────────────────────────
 
+
 def _cuboid_vertices(
-    cx: float, cy: float, cz: float,
-    sx: float, sy: float, sz: float,
+    cx: float,
+    cy: float,
+    cz: float,
+    sx: float,
+    sy: float,
+    sz: float,
 ) -> np.ndarray:
     """Return the 8 vertices of an axis-aligned cuboid centred at (cx,cy,cz)."""
     hx, hy, hz = sx / 2, sy / 2, sz / 2
-    return np.array([
-        [cx - hx, cy - hy, cz - hz],
-        [cx + hx, cy - hy, cz - hz],
-        [cx + hx, cy + hy, cz - hz],
-        [cx - hx, cy + hy, cz - hz],
-        [cx - hx, cy - hy, cz + hz],
-        [cx + hx, cy - hy, cz + hz],
-        [cx + hx, cy + hy, cz + hz],
-        [cx - hx, cy + hy, cz + hz],
-    ])
+    return np.array(
+        [
+            [cx - hx, cy - hy, cz - hz],
+            [cx + hx, cy - hy, cz - hz],
+            [cx + hx, cy + hy, cz - hz],
+            [cx - hx, cy + hy, cz - hz],
+            [cx - hx, cy - hy, cz + hz],
+            [cx + hx, cy - hy, cz + hz],
+            [cx + hx, cy + hy, cz + hz],
+            [cx - hx, cy + hy, cz + hz],
+        ]
+    )
 
 
 _CUBOID_FACES = [
@@ -78,15 +85,17 @@ _CUBOID_FACES = [
 
 def _draw_box(ax, cx, cy, cz, sx, sy, sz, color, alpha):
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
     verts = _cuboid_vertices(cx, cy, cz, sx, sy, sz)
     faces = [[verts[i] for i in face] for face in _CUBOID_FACES]
-    poly = Poly3DCollection(faces, alpha=alpha, linewidths=0.3, edgecolors="k")
+    poly = Poly3DCollection(faces, alpha=alpha, linewidths=0.3, edgecolors='k')
     poly.set_facecolor(color)
     ax.add_collection3d(poly)
 
 
 def _draw_cylinder(ax, cx, cy, cz, radius, length, color, alpha, n=24):
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
     theta = np.linspace(0, 2 * np.pi, n, endpoint=False)
     xs = radius * np.cos(theta)
     ys = radius * np.sin(theta)
@@ -97,42 +106,53 @@ def _draw_cylinder(ax, cx, cy, cz, radius, length, color, alpha, n=24):
     faces = []
     for i in range(n):
         j = (i + 1) % n
-        faces.append([
-            [cx + xs[i], cy + ys[i], z0],
-            [cx + xs[j], cy + ys[j], z0],
-            [cx + xs[j], cy + ys[j], z1],
-            [cx + xs[i], cy + ys[i], z1],
-        ])
+        faces.append(
+            [
+                [cx + xs[i], cy + ys[i], z0],
+                [cx + xs[j], cy + ys[j], z0],
+                [cx + xs[j], cy + ys[j], z1],
+                [cx + xs[i], cy + ys[i], z1],
+            ]
+        )
     # Cap faces
     bottom = [[cx + xs[i], cy + ys[i], z0] for i in range(n)]
-    top    = [[cx + xs[i], cy + ys[i], z1] for i in range(n)]
+    top = [[cx + xs[i], cy + ys[i], z1] for i in range(n)]
     faces.append(bottom)
     faces.append(top)
 
-    poly = Poly3DCollection(faces, alpha=alpha, linewidths=0.2, edgecolors="k")
+    poly = Poly3DCollection(faces, alpha=alpha, linewidths=0.2, edgecolors='k')
     poly.set_facecolor(color)
     ax.add_collection3d(poly)
 
 
 def _draw_sphere(ax, cx, cy, cz, radius, color, alpha, n=16):
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-    phi   = np.linspace(0, np.pi, n)
+
+    phi = np.linspace(0, np.pi, n)
     theta = np.linspace(0, 2 * np.pi, n)
     faces = []
     for i in range(n - 1):
         for j in range(n - 1):
-            p00 = [cx + radius * np.sin(phi[i])   * np.cos(theta[j]),
-                   cy + radius * np.sin(phi[i])   * np.sin(theta[j]),
-                   cz + radius * np.cos(phi[i])]
-            p10 = [cx + radius * np.sin(phi[i+1]) * np.cos(theta[j]),
-                   cy + radius * np.sin(phi[i+1]) * np.sin(theta[j]),
-                   cz + radius * np.cos(phi[i+1])]
-            p11 = [cx + radius * np.sin(phi[i+1]) * np.cos(theta[j+1]),
-                   cy + radius * np.sin(phi[i+1]) * np.sin(theta[j+1]),
-                   cz + radius * np.cos(phi[i+1])]
-            p01 = [cx + radius * np.sin(phi[i])   * np.cos(theta[j+1]),
-                   cy + radius * np.sin(phi[i])   * np.sin(theta[j+1]),
-                   cz + radius * np.cos(phi[i])]
+            p00 = [
+                cx + radius * np.sin(phi[i]) * np.cos(theta[j]),
+                cy + radius * np.sin(phi[i]) * np.sin(theta[j]),
+                cz + radius * np.cos(phi[i]),
+            ]
+            p10 = [
+                cx + radius * np.sin(phi[i + 1]) * np.cos(theta[j]),
+                cy + radius * np.sin(phi[i + 1]) * np.sin(theta[j]),
+                cz + radius * np.cos(phi[i + 1]),
+            ]
+            p11 = [
+                cx + radius * np.sin(phi[i + 1]) * np.cos(theta[j + 1]),
+                cy + radius * np.sin(phi[i + 1]) * np.sin(theta[j + 1]),
+                cz + radius * np.cos(phi[i + 1]),
+            ]
+            p01 = [
+                cx + radius * np.sin(phi[i]) * np.cos(theta[j + 1]),
+                cy + radius * np.sin(phi[i]) * np.sin(theta[j + 1]),
+                cz + radius * np.cos(phi[i]),
+            ]
             faces.append([p00, p10, p11, p01])
     poly = Poly3DCollection(faces, alpha=alpha, linewidths=0.0)
     poly.set_facecolor(color)
@@ -143,7 +163,7 @@ def _draw_object(ax, obj: SceneObject) -> None:
     from px4_gz_scenes.shapes import Box, Cylinder, Sphere, Composite
 
     color = _label_color(obj.label)
-    alpha = 0.15 if obj.label in ("floor", "ceiling", "wall") else _DEFAULT_ALPHA
+    alpha = 0.15 if obj.label in ('floor', 'ceiling', 'wall') else _DEFAULT_ALPHA
     cx, cy, cz = obj.position
 
     shape = obj.shape
@@ -160,26 +180,33 @@ def _draw_object(ax, obj: SceneObject) -> None:
         for child_shape, (ox, oy, oz), _rot in shape.children:
             child_obj_pos = (cx + ox, cy + oy, cz + oz)
             from px4_gz_scenes.scene_object import SceneObject as SO
-            _draw_object(ax, SO(
-                name=obj.name,
-                shape=child_shape,
-                position=child_obj_pos,
-                label=obj.label,
-            ))
+
+            _draw_object(
+                ax,
+                SO(
+                    name=obj.name,
+                    shape=child_shape,
+                    position=child_obj_pos,
+                    label=obj.label,
+                ),
+            )
 
 
 # ── Legend ───────────────────────────────────────────────────────────────────
 
+
 def _add_legend(ax, labels: set[str]) -> None:
     import matplotlib.patches as mpatches
+
     handles = [
-        mpatches.Patch(facecolor=_label_color(l), edgecolor="k", linewidth=0.5, label=l)
+        mpatches.Patch(facecolor=_label_color(l), edgecolor='k', linewidth=0.5, label=l)
         for l in sorted(labels)
     ]
-    ax.legend(handles=handles, loc="upper left", fontsize=7, framealpha=0.7)
+    ax.legend(handles=handles, loc='upper left', fontsize=7, framealpha=0.7)
 
 
 # ── Public API ───────────────────────────────────────────────────────────────
+
 
 def visualise_scene(
     scene: Scene,
@@ -205,12 +232,11 @@ def visualise_scene(
         from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 — registers 3D projection
     except ImportError as exc:
         raise ImportError(
-            "Visualisation requires matplotlib. "
-            "Install it with: pip install matplotlib"
+            'Visualisation requires matplotlib. Install it with: pip install matplotlib'
         ) from exc
 
     fig = plt.figure(figsize=figsize)
-    ax = fig.add_subplot(111, projection="3d")
+    ax = fig.add_subplot(111, projection='3d')
 
     labels_used: set[str] = set()
     for obj in scene.objects:
@@ -224,9 +250,9 @@ def visualise_scene(
     ax.set_xlim(0, ex)
     ax.set_ylim(0, ey)
     ax.set_zlim(0, ez)
-    ax.set_xlabel("X / East (m)")
-    ax.set_ylabel("Y / North (m)")
-    ax.set_zlabel("Z / Up (m)")
+    ax.set_xlabel('X / East (m)')
+    ax.set_ylabel('Y / North (m)')
+    ax.set_zlabel('Z / Up (m)')
     ax.set_title(title or scene.name)
     ax.view_init(elev=elev, azim=azim)
     ax.set_box_aspect([ex, ey, ez])

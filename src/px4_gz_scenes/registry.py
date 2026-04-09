@@ -32,14 +32,13 @@ def register_scene(name: str) -> Callable[[SceneFactory], SceneFactory]:
     Raises:
         ValueError: if *name* is already registered.
     """
+
     def decorator(fn: SceneFactory) -> SceneFactory:
         if name in _REGISTRY:
-            raise ValueError(
-                f"Scene {name!r} is already registered. "
-                "Each name must be unique."
-            )
+            raise ValueError(f'Scene {name!r} is already registered. Each name must be unique.')
         _REGISTRY[name] = fn
         return fn
+
     return decorator
 
 
@@ -58,10 +57,8 @@ def get_scene(name: str, **kwargs) -> Scene:
         KeyError: if *name* is not in the registry.
     """
     if name not in _REGISTRY:
-        available = ", ".join(sorted(_REGISTRY))
-        raise KeyError(
-            f"Unknown scene {name!r}. Available scenes: {available}"
-        )
+        available = ', '.join(sorted(_REGISTRY))
+        raise KeyError(f'Unknown scene {name!r}. Available scenes: {available}')
     return _REGISTRY[name](**kwargs)
 
 

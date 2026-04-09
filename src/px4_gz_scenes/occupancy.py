@@ -43,6 +43,7 @@ from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere
 # in the shape's local frame (origin at the shape centre).  They return a
 # boolean mask of the same leading shape (Nx, Ny, Nz).
 
+
 def _inside_box(local_pts: np.ndarray, shape: Box) -> np.ndarray:
     hx, hy, hz = shape.size[0] / 2, shape.size[1] / 2, shape.size[2] / 2
     return (
@@ -54,12 +55,12 @@ def _inside_box(local_pts: np.ndarray, shape: Box) -> np.ndarray:
 
 def _inside_cylinder(local_pts: np.ndarray, shape: Cylinder) -> np.ndarray:
     r2 = local_pts[..., 0] ** 2 + local_pts[..., 1] ** 2
-    return (r2 <= shape.radius ** 2) & (np.abs(local_pts[..., 2]) <= shape.length / 2)
+    return (r2 <= shape.radius**2) & (np.abs(local_pts[..., 2]) <= shape.length / 2)
 
 
 def _inside_sphere(local_pts: np.ndarray, shape: Sphere) -> np.ndarray:
-    d2 = np.sum(local_pts ** 2, axis=-1)
-    return d2 <= shape.radius ** 2
+    d2 = np.sum(local_pts**2, axis=-1)
+    return d2 <= shape.radius**2
 
 
 def _inside_shape(local_pts: np.ndarray, shape: Shape) -> np.ndarray:
@@ -88,7 +89,7 @@ def _inside_shape(local_pts: np.ndarray, shape: Shape) -> np.ndarray:
             mask |= _inside_shape(child_local, child_shape)
         return mask
 
-    raise TypeError(f"Unknown shape type: {type(shape)!r}")
+    raise TypeError(f'Unknown shape type: {type(shape)!r}')
 
 
 def _mark_object(
@@ -107,6 +108,7 @@ def _mark_object(
 
 
 # ── Public API ───────────────────────────────────────────────────────────────
+
 
 def to_occupancy_grid(scene: Scene) -> np.ndarray:
     """Return a 3-D occupancy grid for *scene*.
@@ -130,7 +132,7 @@ def to_occupancy_grid(scene: Scene) -> np.ndarray:
     ii = (np.arange(nx, dtype=np.float64) + 0.5) * res
     jj = (np.arange(ny, dtype=np.float64) + 0.5) * res
     kk = (np.arange(nz, dtype=np.float64) + 0.5) * res
-    Xi, Yj, Zk = np.meshgrid(ii, jj, kk, indexing="ij")
+    Xi, Yj, Zk = np.meshgrid(ii, jj, kk, indexing='ij')
     world_pts = np.stack([Xi, Yj, Zk], axis=-1)  # (Nx, Ny, Nz, 3)
 
     grid = np.zeros((nx, ny, nz), dtype=bool)

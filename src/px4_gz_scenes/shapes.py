@@ -110,8 +110,8 @@ def aabb(shape: Shape) -> tuple[Vec3, Vec3]:
 
     # Composite: union of child AABBs transformed by their offsets.
     # We ignore child rotations for simplicity (conservative overestimate).
-    min_x = min_y = min_z = float("inf")
-    max_x = max_y = max_z = float("-inf")
+    min_x = min_y = min_z = float('inf')
+    max_x = max_y = max_z = float('-inf')
     for child_shape, (ox, oy, oz), _rot in shape.children:
         (lx, ly, lz), (hx, hy, hz) = aabb(child_shape)
         min_x = min(min_x, ox + lx)

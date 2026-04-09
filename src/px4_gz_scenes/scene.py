@@ -47,7 +47,7 @@ class Scene:
     extent: Vec3
     objects: list[SceneObject] = field(default_factory=list)
     resolution: float = 0.2
-    frame: str = "ENU"
+    frame: str = 'ENU'
     origin: Vec3 = (0.0, 0.0, 0.0)
 
     # ── Mutation helpers ────────────────────────────────────────────────────
@@ -59,22 +59,26 @@ class Scene:
     def add_floor(self, thickness: float = 0.2, label: str = LABEL_FLOOR) -> None:
         """Add a floor slab centred at z = thickness / 2."""
         ex, ey, _ = self.extent
-        self.add(SceneObject(
-            name="floor",
-            shape=Box(size=(ex, ey, thickness)),
-            position=(ex / 2, ey / 2, thickness / 2),
-            label=label,
-        ))
+        self.add(
+            SceneObject(
+                name='floor',
+                shape=Box(size=(ex, ey, thickness)),
+                position=(ex / 2, ey / 2, thickness / 2),
+                label=label,
+            )
+        )
 
     def add_ceiling(self, thickness: float = 0.2, label: str = LABEL_CEILING) -> None:
         """Add a ceiling slab centred at z = z_extent - thickness / 2."""
         ex, ey, ez = self.extent
-        self.add(SceneObject(
-            name="ceiling",
-            shape=Box(size=(ex, ey, thickness)),
-            position=(ex / 2, ey / 2, ez - thickness / 2),
-            label=label,
-        ))
+        self.add(
+            SceneObject(
+                name='ceiling',
+                shape=Box(size=(ex, ey, thickness)),
+                position=(ex / 2, ey / 2, ez - thickness / 2),
+                label=label,
+            )
+        )
 
     def add_walls(self, thickness: float = 0.2, label: str = LABEL_WALL) -> None:
         """Add four full-height boundary walls (south, north, west, east)."""
@@ -82,18 +86,20 @@ class Scene:
         t = thickness
         walls = [
             # name,        size,              position
-            ("wall_south", (ex, t, ez),       (ex / 2,     t / 2,    ez / 2)),
-            ("wall_north", (ex, t, ez),       (ex / 2,     ey - t/2, ez / 2)),
-            ("wall_west",  (t,  ey, ez),      (t / 2,      ey / 2,   ez / 2)),
-            ("wall_east",  (t,  ey, ez),      (ex - t / 2, ey / 2,   ez / 2)),
+            ('wall_south', (ex, t, ez), (ex / 2, t / 2, ez / 2)),
+            ('wall_north', (ex, t, ez), (ex / 2, ey - t / 2, ez / 2)),
+            ('wall_west', (t, ey, ez), (t / 2, ey / 2, ez / 2)),
+            ('wall_east', (t, ey, ez), (ex - t / 2, ey / 2, ez / 2)),
         ]
         for name, size, pos in walls:
-            self.add(SceneObject(
-                name=name,
-                shape=Box(size=size),
-                position=pos,
-                label=label,
-            ))
+            self.add(
+                SceneObject(
+                    name=name,
+                    shape=Box(size=size),
+                    position=pos,
+                    label=label,
+                )
+            )
 
     def add_boundary(
         self,
@@ -113,6 +119,6 @@ class Scene:
 
     def __repr__(self) -> str:
         return (
-            f"Scene(name={self.name!r}, extent={self.extent}, "
-            f"objects={len(self.objects)}, resolution={self.resolution})"
+            f'Scene(name={self.name!r}, extent={self.extent}, '
+            f'objects={len(self.objects)}, resolution={self.resolution})'
         )

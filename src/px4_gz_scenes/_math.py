@@ -31,11 +31,14 @@ def quat_to_rotation_matrix(q: Quaternion) -> np.ndarray:
     """
     w, x, y, z = q
     x2, y2, z2 = x * x, y * y, z * z
-    return np.array([
-        [1 - 2 * (y2 + z2),   2 * (x*y - z*w),   2 * (x*z + y*w)],
-        [  2 * (x*y + z*w), 1 - 2 * (x2 + z2),   2 * (y*z - x*w)],
-        [  2 * (x*z - y*w),   2 * (y*z + x*w), 1 - 2 * (x2 + y2)],
-    ], dtype=np.float64)
+    return np.array(
+        [
+            [1 - 2 * (y2 + z2), 2 * (x * y - z * w), 2 * (x * z + y * w)],
+            [2 * (x * y + z * w), 1 - 2 * (x2 + z2), 2 * (y * z - x * w)],
+            [2 * (x * z - y * w), 2 * (y * z + x * w), 1 - 2 * (x2 + y2)],
+        ],
+        dtype=np.float64,
+    )
 
 
 def apply_rotation(R: np.ndarray, pts: np.ndarray) -> np.ndarray:

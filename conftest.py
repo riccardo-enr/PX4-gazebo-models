@@ -10,13 +10,13 @@ before pytest validates pending hooks.
 
 def pytest_configure(config) -> None:
     _BROKEN_PLUGINS = [
-        "launch_ros",
-        "launch_testing_ros_pytest_entrypoint",
-        "ament_copyright",
-        "ament_flake8",
-        "ament_lint",
-        "ament_pep257",
-        "ament_xmllint",
+        'launch_ros',
+        'launch_testing_ros_pytest_entrypoint',
+        'ament_copyright',
+        'ament_flake8',
+        'ament_lint',
+        'ament_pep257',
+        'ament_xmllint',
     ]
     pm = config.pluginmanager
     for name in _BROKEN_PLUGINS:

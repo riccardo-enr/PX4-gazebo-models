@@ -19,15 +19,15 @@ from px4_gz_scenes._types import Color, IDENTITY_QUAT, Quaternion, Vec3
 from px4_gz_scenes.shapes import Shape
 
 # ── Semantic label constants ────────────────────────────────────────────────
-LABEL_WALL = "wall"
-LABEL_FLOOR = "floor"
-LABEL_CEILING = "ceiling"
-LABEL_TABLE = "table"
-LABEL_COLUMN = "column"
-LABEL_PARTITION = "partition"
-LABEL_RACK = "rack"
-LABEL_DOOR = "door"
-LABEL_OBSTACLE = "obstacle"
+LABEL_WALL = 'wall'
+LABEL_FLOOR = 'floor'
+LABEL_CEILING = 'ceiling'
+LABEL_TABLE = 'table'
+LABEL_COLUMN = 'column'
+LABEL_PARTITION = 'partition'
+LABEL_RACK = 'rack'
+LABEL_DOOR = 'door'
+LABEL_OBSTACLE = 'obstacle'
 
 
 @dataclass(frozen=True)
