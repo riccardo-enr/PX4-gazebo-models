@@ -72,6 +72,7 @@ from px4_gz_scenes.scene_object import (
 from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere, aabb
 from px4_gz_scenes.vis import visualise_scene
 from px4_gz_scenes.occupancy import to_occupancy_grid
+from px4_gz_scenes.pointcloud import sample_pointcloud
 from px4_gz_scenes.sdf import scene_to_sdf
 
 # Importing environments triggers @register_scene decorators.
@@ -111,6 +112,7 @@ __all__ = [
     # visualisation
     'visualise_scene',
     # exporters
+    'sample_pointcloud',
     'to_occupancy_grid',
     'scene_to_sdf',
 ]
