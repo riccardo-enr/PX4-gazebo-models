@@ -35,7 +35,7 @@ import numpy as np
 from px4_gz_scenes._math import apply_rotation, quat_to_rotation_matrix
 from px4_gz_scenes.scene import Scene
 from px4_gz_scenes.scene_object import SceneObject
-from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere
+from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere, aabb
 
 
 # ── Per-shape containment helpers ───────────────────────────────────────────
@@ -95,16 +95,62 @@ def _inside_shape(local_pts: np.ndarray, shape: Shape) -> np.ndarray:
 def _mark_object(
     grid: np.ndarray,
     obj: SceneObject,
-    world_pts: np.ndarray,
+    res: float,
 ) -> None:
-    """OR-accumulate occupied voxels for one SceneObject into *grid*."""
-    px, py, pz = obj.position
-    # Translate voxel centres to the object's local frame origin.
-    local_pts = world_pts - np.array([px, py, pz], dtype=np.float64)
-    # Apply the inverse rotation (conjugate quaternion ↔ transposed matrix).
+    """OR-accumulate occupied voxels for one SceneObject into *grid*.
+
+    Only voxels within the object's world-frame AABB are tested, which gives
+    large speedups for thin objects (floors, ceilings, walls) that would
+    otherwise redundantly test the entire grid volume.
+    """
+    nx, ny, nz = grid.shape
+
+    # Compute the rotation matrix once; reuse for both AABB expansion and
+    # the local-frame transform below.
     R = quat_to_rotation_matrix(obj.rotation)
+
+    # Rotate the 8 local AABB corners to world frame and take their envelope.
+    lo, hi = aabb(obj.shape)
+    corners = np.array(
+        [
+            [lo[0], lo[1], lo[2]],
+            [lo[0], lo[1], hi[2]],
+            [lo[0], hi[1], lo[2]],
+            [lo[0], hi[1], hi[2]],
+            [hi[0], lo[1], lo[2]],
+            [hi[0], lo[1], hi[2]],
+            [hi[0], hi[1], lo[2]],
+            [hi[0], hi[1], hi[2]],
+        ],
+        dtype=np.float64,
+    )
+    rotated = corners @ R.T  # (8, 3) in world frame (no translation yet)
+    pos = np.array(obj.position, dtype=np.float64)
+    world_lo = rotated.min(axis=0) + pos
+    world_hi = rotated.max(axis=0) + pos
+
+    # Convert world AABB to grid index ranges, clipped to grid bounds.
+    i_min = max(0, int(math.floor(world_lo[0] / res)))
+    j_min = max(0, int(math.floor(world_lo[1] / res)))
+    k_min = max(0, int(math.floor(world_lo[2] / res)))
+    i_max = min(nx, int(math.ceil(world_hi[0] / res)))
+    j_max = min(ny, int(math.ceil(world_hi[1] / res)))
+    k_max = min(nz, int(math.ceil(world_hi[2] / res)))
+
+    if i_min >= i_max or j_min >= j_max or k_min >= k_max:
+        return  # Object fully outside grid
+
+    # Build voxel centres only for the sub-volume within the AABB.
+    ii = (np.arange(i_min, i_max, dtype=np.float64) + 0.5) * res
+    jj = (np.arange(j_min, j_max, dtype=np.float64) + 0.5) * res
+    kk = (np.arange(k_min, k_max, dtype=np.float64) + 0.5) * res
+    Xi, Yj, Zk = np.meshgrid(ii, jj, kk, indexing='ij')
+    sub_pts = np.stack([Xi, Yj, Zk], axis=-1)
+
+    # Transform sub-volume to object-local frame and test containment.
+    local_pts = sub_pts - pos
     local_pts = apply_rotation(R.T, local_pts)
-    grid |= _inside_shape(local_pts, obj.shape)
+    grid[i_min:i_max, j_min:j_max, k_min:k_max] |= _inside_shape(local_pts, obj.shape)
 
 
 # ── Public API ───────────────────────────────────────────────────────────────
@@ -128,15 +174,8 @@ def to_occupancy_grid(scene: Scene) -> np.ndarray:
     ny = math.ceil(scene.extent[1] / res)
     nz = math.ceil(scene.extent[2] / res)
 
-    # Build the (Nx, Ny, Nz, 3) array of voxel centres in world frame.
-    ii = (np.arange(nx, dtype=np.float64) + 0.5) * res
-    jj = (np.arange(ny, dtype=np.float64) + 0.5) * res
-    kk = (np.arange(nz, dtype=np.float64) + 0.5) * res
-    Xi, Yj, Zk = np.meshgrid(ii, jj, kk, indexing='ij')
-    world_pts = np.stack([Xi, Yj, Zk], axis=-1)  # (Nx, Ny, Nz, 3)
-
     grid = np.zeros((nx, ny, nz), dtype=bool)
     for obj in scene.objects:
-        _mark_object(grid, obj, world_pts)
+        _mark_object(grid, obj, res)
 
     return grid

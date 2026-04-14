@@ -64,29 +64,6 @@
           </visual>
       </link>
     </model>
-    <model name="ceiling">
-      <static>true</static>
-      <pose>7.5 7.5 2.9 0.000000 0.000000 0.000000</pose>
-      <link name="link">
-          <collision name="collision">
-            <pose>0.0 0.0 0.0 0.000000 0.000000 0.000000</pose>
-            <geometry>
-              <box><size>15.0 15.0 0.2</size></box>
-            </geometry>
-          </collision>
-          <visual name="visual">
-            <pose>0.0 0.0 0.0 0.000000 0.000000 0.000000</pose>
-            <geometry>
-              <box><size>15.0 15.0 0.2</size></box>
-            </geometry>
-            <material>
-              <ambient>0.9 0.9 0.9 1</ambient>
-              <diffuse>0.9 0.9 0.9 1</diffuse>
-              <specular>0.1 0.1 0.1 1</specular>
-            </material>
-          </visual>
-      </link>
-    </model>
     <model name="wall_south">
       <static>true</static>
       <pose>7.5 0.1 1.5 0.000000 0.000000 0.000000</pose>
