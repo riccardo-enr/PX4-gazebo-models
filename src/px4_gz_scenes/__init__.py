@@ -32,6 +32,7 @@ Visualisation (requires matplotlib)::
 Exporters::
 
     to_occupancy_grid
+    sample_pointcloud
     scene_to_sdf
 
 Typical usage::
