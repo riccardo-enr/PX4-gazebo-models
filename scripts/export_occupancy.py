@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 export_occupancy.py -- export a px4_gz_scenes environment to a .npy occupancy grid.
 
