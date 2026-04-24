@@ -45,7 +45,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.scene not in list_scenes():
-        print(f"Unknown scene {args.scene!r}. Available: {list_scenes()}")
+        print(f'Unknown scene {args.scene!r}. Available: {list_scenes()}')
         sys.exit(1)
 
     scene = get_scene(args.scene)

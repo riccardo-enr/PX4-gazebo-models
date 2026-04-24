@@ -38,18 +38,19 @@ from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere
 # ── Colour palette (ambient/diffuse RGB) per semantic label ────────────────
 
 _LABEL_COLOR: dict[str, tuple[float, float, float]] = {
-    LABEL_FLOOR:     (0.75, 0.75, 0.75),
-    LABEL_CEILING:   (0.90, 0.90, 0.90),
-    LABEL_WALL:      (0.80, 0.80, 0.80),
+    LABEL_FLOOR: (0.75, 0.75, 0.75),
+    LABEL_CEILING: (0.90, 0.90, 0.90),
+    LABEL_WALL: (0.80, 0.80, 0.80),
     LABEL_PARTITION: (0.65, 0.65, 0.70),
-    LABEL_TABLE:     (0.55, 0.38, 0.18),
-    LABEL_COLUMN:    (0.45, 0.45, 0.45),
-    LABEL_RACK:      (0.25, 0.28, 0.30),
+    LABEL_TABLE: (0.55, 0.38, 0.18),
+    LABEL_COLUMN: (0.45, 0.45, 0.45),
+    LABEL_RACK: (0.25, 0.28, 0.30),
 }
 _DEFAULT_COLOR: tuple[float, float, float] = (0.60, 0.60, 0.60)
 
 
 # ── Internal helpers ───────────────────────────────────────────────────────
+
 
 def _quat_to_rpy(q: Quaternion) -> tuple[float, float, float]:
     """Convert a Hamilton quaternion (w, x, y, z) to ZYX Euler angles (rad)."""
@@ -81,10 +82,7 @@ def _pose_str(position: Vec3, rotation: Quaternion) -> str:
     x, y, z = position
     roll, pitch, yaw = _quat_to_rpy(rotation)
     # Round position to 6 decimal places to suppress float subtraction noise.
-    return (
-        f'{round(x, 6)} {round(y, 6)} {round(z, 6)} '
-        f'{roll:.6f} {pitch:.6f} {yaw:.6f}'
-    )
+    return f'{round(x, 6)} {round(y, 6)} {round(z, 6)} {roll:.6f} {pitch:.6f} {yaw:.6f}'
 
 
 def _geometry_xml(shape: Shape, indent: str) -> str:
@@ -92,11 +90,7 @@ def _geometry_xml(shape: Shape, indent: str) -> str:
     i = indent
     if isinstance(shape, Box):
         sx, sy, sz = (round(v, 6) for v in shape.size)
-        return (
-            f'{i}<geometry>\n'
-            f'{i}  <box><size>{sx} {sy} {sz}</size></box>\n'
-            f'{i}</geometry>\n'
-        )
+        return f'{i}<geometry>\n{i}  <box><size>{sx} {sy} {sz}</size></box>\n{i}</geometry>\n'
     if isinstance(shape, Cylinder):
         return (
             f'{i}<geometry>\n'
@@ -243,6 +237,7 @@ _WORLD_FOOTER = """\
 
 # ── Public API ─────────────────────────────────────────────────────────────
 
+
 def scene_to_sdf(
     scene: Scene,
     exclude_labels: Sequence[str] | None = None,
@@ -259,10 +254,6 @@ def scene_to_sdf(
         A UTF-8 SDF string ready to write to a ``.sdf`` file.
     """
     skip = set(exclude_labels) if exclude_labels else set()
-    models = ''.join(
-        _model_xml(obj)
-        for obj in scene.objects
-        if obj.label not in skip
-    )
+    models = ''.join(_model_xml(obj) for obj in scene.objects if obj.label not in skip)
     header = _WORLD_HEADER.format(world_name=scene.name)
     return header + models + _WORLD_FOOTER
