@@ -77,16 +77,16 @@
 
     <model name="partition_a_lower">
       <static>true</static>
-      <pose>-1.50 -0.84 0.9 0 0 0</pose>
+      <pose>-1.50 -0.84 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.24 0.72 1.8</size></box>
+            <box><size>0.24 0.72 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.24 0.72 1.8</size></box>
+            <box><size>0.24 0.72 1.0</size></box>
           </geometry>
           <material>
             <ambient>0.65 0.65 0.7 1</ambient>
@@ -99,16 +99,16 @@
 
     <model name="partition_a_upper">
       <static>true</static>
-      <pose>-1.50 0.84 0.9 0 0 0</pose>
+      <pose>-1.50 0.84 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.24 0.72 1.8</size></box>
+            <box><size>0.24 0.72 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.24 0.72 1.8</size></box>
+            <box><size>0.24 0.72 1.0</size></box>
           </geometry>
           <material>
             <ambient>0.65 0.65 0.7 1</ambient>
@@ -121,16 +121,16 @@
 
     <model name="partition_b_lower">
       <static>true</static>
-      <pose>0.90 -0.99 0.9 0 0 0</pose>
+      <pose>0.90 -0.99 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.24 1.62 1.8</size></box>
+            <box><size>0.24 1.62 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.24 1.62 1.8</size></box>
+            <box><size>0.24 1.62 1.0</size></box>
           </geometry>
           <material>
             <ambient>0.65 0.65 0.7 1</ambient>
@@ -143,16 +143,16 @@
 
     <model name="partition_b_upper">
       <static>true</static>
-      <pose>0.90 1.29 0.9 0 0 0</pose>
+      <pose>0.90 1.29 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.24 1.02 1.8</size></box>
+            <box><size>0.24 1.02 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.24 1.02 1.8</size></box>
+            <box><size>0.24 1.02 1.0</size></box>
           </geometry>
           <material>
             <ambient>0.65 0.65 0.7 1</ambient>
@@ -165,16 +165,16 @@
 
     <model name="partition_connector">
       <static>true</static>
-      <pose>-0.30 0.60 0.9 0 0 0</pose>
+      <pose>-0.30 0.60 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>2.16 0.24 1.8</size></box>
+            <box><size>2.16 0.24 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>2.16 0.24 1.8</size></box>
+            <box><size>2.16 0.24 1.0</size></box>
           </geometry>
           <material>
             <ambient>0.65 0.65 0.7 1</ambient>
@@ -275,16 +275,16 @@
 
     <model name="col_a">
       <static>true</static>
-      <pose>-0.45 2.25 0.9 0 0 0</pose>
+      <pose>-0.45 2.25 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.3 0.3 1.8</size></box>
+            <box><size>0.3 0.3 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.3 0.3 1.8</size></box>
+            <box><size>0.3 0.3 1.0</size></box>
           </geometry>
           <material>
             <ambient>0.45 0.45 0.45 1</ambient>
@@ -297,16 +297,16 @@
 
     <model name="col_b">
       <static>true</static>
-      <pose>2.55 2.25 0.9 0 0 0</pose>
+      <pose>2.55 2.25 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision">
           <geometry>
-            <box><size>0.3 0.3 1.8</size></box>
+            <box><size>0.3 0.3 1.0</size></box>
           </geometry>
         </collision>
         <visual name="visual">
           <geometry>
-            <box><size>0.3 0.3 1.8</size></box>
+            <box><size>0.3 0.3 1.0</size></box>
           </geometry>
           <material>
             <ambient>0.45 0.45 0.45 1</ambient>
