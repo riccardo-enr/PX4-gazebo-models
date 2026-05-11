@@ -34,7 +34,6 @@ from px4_gz_scenes.scene_object import (
 )
 from px4_gz_scenes.shapes import Box, Composite, Cylinder, Shape, Sphere
 
-
 # ── Colour palette (ambient/diffuse RGB) per semantic label ────────────────
 
 _LABEL_COLOR: dict[str, tuple[float, float, float]] = {
@@ -73,7 +72,7 @@ def _quat_to_rpy(q: Quaternion) -> tuple[float, float, float]:
 
 def _fmt(v: float) -> str:
     """Format a float, stripping trailing zeros after the decimal point."""
-    s = f'{v:.6g}'
+    s = f"{v:.6g}"
     return s
 
 
@@ -82,7 +81,7 @@ def _pose_str(position: Vec3, rotation: Quaternion) -> str:
     x, y, z = position
     roll, pitch, yaw = _quat_to_rpy(rotation)
     # Round position to 6 decimal places to suppress float subtraction noise.
-    return f'{round(x, 6)} {round(y, 6)} {round(z, 6)} {roll:.6f} {pitch:.6f} {yaw:.6f}'
+    return f"{round(x, 6)} {round(y, 6)} {round(z, 6)} {roll:.6f} {pitch:.6f} {yaw:.6f}"
 
 
 def _geometry_xml(shape: Shape, indent: str) -> str:
@@ -90,34 +89,34 @@ def _geometry_xml(shape: Shape, indent: str) -> str:
     i = indent
     if isinstance(shape, Box):
         sx, sy, sz = (round(v, 6) for v in shape.size)
-        return f'{i}<geometry>\n{i}  <box><size>{sx} {sy} {sz}</size></box>\n{i}</geometry>\n'
+        return f"{i}<geometry>\n{i}  <box><size>{sx} {sy} {sz}</size></box>\n{i}</geometry>\n"
     if isinstance(shape, Cylinder):
         return (
-            f'{i}<geometry>\n'
-            f'{i}  <cylinder>'
-            f'<radius>{shape.radius}</radius>'
-            f'<length>{shape.length}</length>'
-            f'</cylinder>\n'
-            f'{i}</geometry>\n'
+            f"{i}<geometry>\n"
+            f"{i}  <cylinder>"
+            f"<radius>{shape.radius}</radius>"
+            f"<length>{shape.length}</length>"
+            f"</cylinder>\n"
+            f"{i}</geometry>\n"
         )
     if isinstance(shape, Sphere):
         return (
-            f'{i}<geometry>\n'
-            f'{i}  <sphere><radius>{shape.radius}</radius></sphere>\n'
-            f'{i}</geometry>\n'
+            f"{i}<geometry>\n"
+            f"{i}  <sphere><radius>{shape.radius}</radius></sphere>\n"
+            f"{i}</geometry>\n"
         )
-    raise TypeError(f'Unsupported shape type for SDF export: {type(shape)}')
+    raise TypeError(f"Unsupported shape type for SDF export: {type(shape)}")
 
 
 def _material_xml(color: tuple[float, float, float], indent: str) -> str:
     r, g, b = color
     i = indent
     return (
-        f'{i}<material>\n'
-        f'{i}  <ambient>{r} {g} {b} 1</ambient>\n'
-        f'{i}  <diffuse>{r} {g} {b} 1</diffuse>\n'
-        f'{i}  <specular>0.1 0.1 0.1 1</specular>\n'
-        f'{i}</material>\n'
+        f"{i}<material>\n"
+        f"{i}  <ambient>{r} {g} {b} 1</ambient>\n"
+        f"{i}  <diffuse>{r} {g} {b} 1</diffuse>\n"
+        f"{i}  <specular>0.1 0.1 0.1 1</specular>\n"
+        f"{i}</material>\n"
     )
 
 
@@ -127,36 +126,36 @@ def _collision_visual_pair(
     offset: Vec3 = (0.0, 0.0, 0.0),
     rotation: Quaternion = (1.0, 0.0, 0.0, 0.0),
     index: int = 0,
-    indent: str = '          ',
+    indent: str = "          ",
 ) -> str:
     """Return collision + visual XML for one shape, optionally offset within the link."""
     i = indent
     pose = _pose_str(offset, rotation)
-    geom = _geometry_xml(shape, i + '  ')
-    mat = _material_xml(color, i + '  ')
-    tag = '' if index == 0 else f'_{index}'
+    geom = _geometry_xml(shape, i + "  ")
+    mat = _material_xml(color, i + "  ")
+    tag = "" if index == 0 else f"_{index}"
     return (
         f'{i}<collision name="collision{tag}">\n'
-        f'{i}  <pose>{pose}</pose>\n'
-        f'{geom}'
-        f'{i}</collision>\n'
+        f"{i}  <pose>{pose}</pose>\n"
+        f"{geom}"
+        f"{i}</collision>\n"
         f'{i}<visual name="visual{tag}">\n'
-        f'{i}  <pose>{pose}</pose>\n'
-        f'{geom}'
-        f'{mat}'
-        f'{i}</visual>\n'
+        f"{i}  <pose>{pose}</pose>\n"
+        f"{geom}"
+        f"{mat}"
+        f"{i}</visual>\n"
     )
 
 
 def _model_xml(obj: SceneObject) -> str:
     """Return the full ``<model>...</model>`` block for *obj*."""
     color = _LABEL_COLOR.get(obj.label, _DEFAULT_COLOR)
-    i4 = '    '
-    i8 = '        '
+    i4 = "    "
+    i8 = "        "
 
     if isinstance(obj.shape, Composite):
         # Each child is a (shape, offset, rotation) triple relative to obj.position.
-        pairs = ''.join(
+        pairs = "".join(
             _collision_visual_pair(
                 child_shape,
                 color,
@@ -164,7 +163,9 @@ def _model_xml(obj: SceneObject) -> str:
                 rotation=child_rot,
                 index=k,
             )
-            for k, (child_shape, child_offset, child_rot) in enumerate(obj.shape.children)
+            for k, (child_shape, child_offset, child_rot) in enumerate(
+                obj.shape.children
+            )
         )
     else:
         pairs = _collision_visual_pair(obj.shape, color)
@@ -172,12 +173,12 @@ def _model_xml(obj: SceneObject) -> str:
     pose = _pose_str(obj.position, obj.rotation)
     return (
         f'{i4}<model name="{obj.name}">\n'
-        f'{i4}  <static>true</static>\n'
-        f'{i4}  <pose>{pose}</pose>\n'
+        f"{i4}  <static>true</static>\n"
+        f"{i4}  <pose>{pose}</pose>\n"
         f'{i4}  <link name="link">\n'
-        f'{pairs}'
-        f'{i4}  </link>\n'
-        f'{i4}</model>\n'
+        f"{pairs}"
+        f"{i4}  </link>\n"
+        f"{i4}</model>\n"
     )
 
 
@@ -254,6 +255,6 @@ def scene_to_sdf(
         A UTF-8 SDF string ready to write to a ``.sdf`` file.
     """
     skip = set(exclude_labels) if exclude_labels else set()
-    models = ''.join(_model_xml(obj) for obj in scene.objects if obj.label not in skip)
+    models = "".join(_model_xml(obj) for obj in scene.objects if obj.label not in skip)
     header = _WORLD_HEADER.format(world_name=scene.name)
     return header + models + _WORLD_FOOTER
